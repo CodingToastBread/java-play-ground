@@ -1,47 +1,73 @@
 package coding.toast.bread.data_uri;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.platform.engine.TestExecutionResult;
 import org.springframework.test.util.AssertionErrors;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 
 import static org.springframework.test.util.AssertionErrors.fail;
 
 /**
- * Super Simple file-to-dataUri convert Test
+ * Super Simple [ file ↔ dataUri ] convert Test Class
  */
 @Slf4j
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataUriTest {
 	
+	// You Have To Prepare your testing image file First!
+	// Or the test will never success!
+	private static final Path testingFile = Paths.get("C:/study/img.png");
+	
+	// this file will be the copy file Path from "testingFile"
+	private static final Path copyFilePath = Paths.get("C:/study/img2.png");
+	
+	private static String dataUri = "";
+	
 	@Test
-	void testMe() {
-		
-		Path path = Paths.get("C:/study/img.png");
-		
-		
-		try (InputStream inputStream = Files.newInputStream(path)) {
-			
+	@Order(0)
+	void convertFileToDataUri() {
+
+		try (InputStream inputStream = Files.newInputStream(testingFile)) {
+
 			// get Content-Type. if you don't know need exact type, and just want to print,
 			// then just use "png".
-			String contentType = Files.probeContentType(path);
-			
+			String contentType = Files.probeContentType(testingFile);
+
 			// read all bytes and transform to Base64 String! (using basic java api - Base64)
 			byte[] bytes = inputStream.readAllBytes();
-			String dataString = Base64.getEncoder().encodeToString(bytes);
-			
+			String dataString =  Base64.getEncoder().encodeToString(bytes);
+
 			// at last create DataUri String
-			String dataUri =
-                "data:%s;base64,%s".formatted(contentType, dataString);
-			
-			log.info("dataUri ==> " + dataUri);
+			dataUri = "data:%s;base64,%s".formatted(contentType, dataString);
+
 			// copy the dataUri and then go to https://onlineimagetools.com/convert-data-uri-to-image. Test it!
+			log.info("dataUri ==> " + dataUri);
+			
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	@Order(1)
+	void convertDataUriToFile() {
+		String onlyDataString = dataUri.substring(dataUri.indexOf(",") + 1);
+		byte[] decode = Base64.getDecoder().decode(onlyDataString.getBytes(StandardCharsets.UTF_8));
+		
+		try (OutputStream outputStream = Files.newOutputStream(copyFilePath, StandardOpenOption.CREATE)) {
+			
+			// after this test end check your image file is successfully copied.
+			outputStream.write(decode);
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
