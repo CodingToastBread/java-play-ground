@@ -1,9 +1,10 @@
 package coding.toast.bread.data_uri;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
-import org.junit.platform.engine.TestExecutionResult;
-import org.springframework.test.util.AssertionErrors;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
 import java.io.InputStream;
