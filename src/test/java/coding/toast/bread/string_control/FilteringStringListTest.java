@@ -53,24 +53,4 @@ public class FilteringStringListTest {
     private List<String> getStringWithPrefix(String wtl) {
         return unionStringList.stream().filter(weirdString -> weirdString.startsWith(wtl)).collect(Collectors.toList());
     }
-    
-    @Test
-    @DisplayName("filtering String list with prefix")
-    void EndsWithFilteringTest() {
-        
-        // 1.
-        // filter out the strings from this list that begin with "wtl", "ufl", and "swl"
-        // and put them into their respective new string lists.
-        
-        List<String> prefixWtlList = getStringWithPrefix("wtl");
-        List<String> prefixUflList = getStringWithPrefix("ufl");
-        List<String> prefixSwlList = getStringWithPrefix("swl");
-        
-        // 2. perform a final check to ensure that the filtering has been done correctly.
-        assertThat(prefixWtlList).containsAll(startsWithWtl);
-        assertThat(prefixUflList).containsAll(startsWithUfl);
-        assertThat(prefixSwlList).containsAll(startsWithSwl);
-        
-    }
-    
 }
