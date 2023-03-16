@@ -1,14 +1,20 @@
-# Java And Spring Coding Just For Fun!
+# Java And Spring Coding Just For Fun 😁
 
-My Java and Spring Coding playground Repository.
-nothing special. just playing with code.
+My Java and Spring Coding playground Repository.<br>
+_nothing special_. **_just playing with code_**, that's all.
 
 <br><br>
 
-## What Have I Done...
+## 🧭 Coding History 
+
+Here is a list of tasks that I have done so far.
+
 - DataUri ⇿ Image File Converting
-  - [DataUriConverting Code](src/test/java/coding/toast/bread/data_uri/DataUriTest.java)
-  - [DataUriAndFileConvertingTest](src/test/java/coding/toast/bread/data_uri/DataUriAndFileConvertingTest.java)
+  - [data uri and file converting in two seperate method](src/test/java/coding/toast/bread/data_uri/DataUriTest.java)
+  - [data uri and file converting in one method](src/test/java/coding/toast/bread/data_uri/DataUriAndFileConvertingTest.java)
+
+- String List Filtering
+  - [filtering string list with prefix pattern](src/test/java/coding/toast/bread/string_control/FilteringStringListTest.java) 
 
 <br>
 
