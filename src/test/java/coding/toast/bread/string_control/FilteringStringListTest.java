@@ -50,7 +50,7 @@ public class FilteringStringListTest {
         // assertThat(prefixWtlList).containsExactlyElementsOf(startsWithWtl);
     }
     
-    private List<String> getStringWithPrefix(String wtl) {
-        return unionStringList.stream().filter(weirdString -> weirdString.startsWith(wtl)).collect(Collectors.toList());
+    private List<String> getStringWithPrefix(String prefix) {
+        return unionStringList.stream().filter(weirdString -> weirdString.startsWith(prefix)).collect(Collectors.toList());
     }
 }
