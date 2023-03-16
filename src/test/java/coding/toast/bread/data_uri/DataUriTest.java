@@ -19,17 +19,18 @@ import java.util.Base64;
 import static org.springframework.test.util.AssertionErrors.fail;
 
 /**
- * Super Simple [ file ↔ dataUri ] convert Test Class
+ * <h3>Simple [ file ↔ dataUri ] convert Test Class</h3>
+ * You Have To Prepare your Own testing image file First! Or the test will never success!
+ * if you want to test without any file creation process without "YOUR BARE HAND", then test with execute {@link DataUriAndFileConvertingTest}
  */
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataUriTest {
-	
-	// You Have To Prepare your testing image file First!
-	// Or the test will never success!
+
+	// test file you have created Before Testing...
 	private static final Path testingFile = Paths.get("C:/study/img.png");
 	
-	// this file will be the copy file Path from "testingFile"
+	// this file will be the copy file Path from "testingFile"...
 	private static final Path copyFilePath = Paths.get("C:/study/img2.png");
 	
 	private static String dataUri = "";
