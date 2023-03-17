@@ -19,5 +19,7 @@ Here is a list of tasks that I have done so far.
 - Controlling and manipulating strings
   - [filtering string list with prefix pattern](src/test/java/coding/toast/bread/string_control/FilteringStringListTest.java) 
   - [converting between CamelCase and snake_case](src/test/java/coding/toast/bread/string_control/CamelCaseSnakeCaseExchangeTest.java)
+  - [string reverse](src/test/java/coding/toast/bread/string_control/ReversingStringOrderTest.java)
+
 <br>
 
