@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RESPONSE>
+    <HEADER>
+        <CODE>200</CODE>
+        <MESSAGE>GET BUILDING INFO LIST - SUCCESS</MESSAGE>
+    </HEADER>
+    <BODY>
+        <BLDG_LIST>
+            <BLDG_INFO>
+                <ZIPCODE>111-222</ZIPCODE>
+                <BLDG_NM>White Bread Luxury Hotel</BLDG_NM>
+            </BLDG_INFO>
+            <BLDG_INFO>
+                <ZIPCODE>333-444</ZIPCODE>
+                <BLDG_NM>Toast Bread Luxury Hotel</BLDG_NM>
+            </BLDG_INFO>
+        </BLDG_LIST>
+    </BODY>
+</RESPONSE>
