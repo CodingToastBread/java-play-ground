@@ -25,7 +25,8 @@ Here is a list of tasks that I have done so far.
 <br>
 
 - XML Marshalling, UnMarshalling
-  - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java):  You will need jakarta.xml.bind-api, jakarta.activation-api, and jaxb-runtime. Please refer to the pom.xml file!
+  - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java)<br>
+    - You will need jakarta.xml.bind-api, jakarta.activation-api, and jaxb-runtime. Please refer to the pom.xml file!
 
 <br>
 
