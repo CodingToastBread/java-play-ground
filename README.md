@@ -7,7 +7,7 @@ _nothing special_. **_just playing with code_**, that's all.
 
 <br><br>
 
-## 🧭 Coding History 
+## 🧭 Coding History
 
 Here is a list of tasks that I have done so far.
 
@@ -17,13 +17,17 @@ Here is a list of tasks that I have done so far.
 
 
 - Controlling and manipulating strings
-  - [filtering string list with prefix pattern](src/test/java/coding/toast/bread/string_control/FilteringStringListTest.java) 
+  - [filtering string list with prefix pattern](src/test/java/coding/toast/bread/string_control/FilteringStringListTest.java)
   - [converting between CamelCase and snake_case](src/test/java/coding/toast/bread/string_control/CamelCaseSnakeCaseExchangeTest.java)
   - [string reverse](src/test/java/coding/toast/bread/string_control/ReversingStringOrderTest.java)
+
+
 
 - XML Marshalling, UnMarshalling
   - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java)
     -  You will need jakarta.xml.bind-api, jakarta.activation-api, and jaxb-runtime. Please refer to the pom.xml file!
+
+
 
 - File System Controlling
   - [playing with File & Directory](src/test/java/coding/toast/bread/playing_with_file/JavaFilesApiTest.java)
