@@ -15,19 +15,19 @@ Here is a list of tasks that I have done so far.
   - [data uri and file converting in two seperate method](src/test/java/coding/toast/bread/data_uri/DataUriTest.java)
   - [data uri and file converting in one method](src/test/java/coding/toast/bread/data_uri/DataUriAndFileConvertingTest.java)
 
+<br>
 
 - Controlling and manipulating strings
   - [filtering string list with prefix pattern](src/test/java/coding/toast/bread/string_control/FilteringStringListTest.java)
   - [converting between CamelCase and snake_case](src/test/java/coding/toast/bread/string_control/CamelCaseSnakeCaseExchangeTest.java)
   - [string reverse](src/test/java/coding/toast/bread/string_control/ReversingStringOrderTest.java)
 
-
+<br>
 
 - XML Marshalling, UnMarshalling
-  - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java)
-    -  You will need jakarta.xml.bind-api, jakarta.activation-api, and jaxb-runtime. Please refer to the pom.xml file!
+  - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java):  You will need jakarta.xml.bind-api, jakarta.activation-api, and jaxb-runtime. Please refer to the pom.xml file!
 
-
+<br>
 
 - File System Controlling
   - [playing with File & Directory](src/test/java/coding/toast/bread/playing_with_file/JavaFilesApiTest.java)
