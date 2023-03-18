@@ -22,7 +22,7 @@ import static org.springframework.test.util.AssertionErrors.fail;
  * <h2>Java Files Api Test</h2>
  * This class is a test class that performs various experiments related to 'files'.<br>
  * To conduct various experiments related to "files", this test class uses not only Java API but also API provided by Spring<br>
- * By the way, some files in this test is located in <a href="">here</a>.<br>
+ * By the way, some files in this test is located in <a href="https://github.com/CodingToastBread/java-playground/tree/main/src/test/resources/coding/toast/bread/playing_with_file/">here</a>.<br>
  * <br>
  * <hr/>
  * <strong>Note: File tests require some files to be present on the local computer for them to be possible.<br>
