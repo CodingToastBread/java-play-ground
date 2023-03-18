@@ -23,7 +23,7 @@ import static org.springframework.test.util.AssertionErrors.fail;
 /**
  * A test class for converting between XML and POJO.<br>
  * By the way, the pre-generated XML files are located in the <br>
- * <a href="../../../../../resources/coding/toast/bread/xml_pojo_convert/">xml_pojo_convert directory</a>
+ * <a href="https://github.com/CodingToastBread/java-playground/tree/main/src/test/resources/coding/toast/bread/xml_pojo_convert">xml_pojo_convert directory</a>
  */
 @Slf4j
 public class XmlPojoConvertTest {
