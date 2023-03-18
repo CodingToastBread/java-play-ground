@@ -64,7 +64,7 @@ public class XmlPojoConvertTest {
 	
 	
 	@Test
-	@DisplayName("converting complicating xml file to pojo (= unmarshalling)")
+	@DisplayName("converting complicate xml file to pojo (= unmarshalling)")
 	void complicateXmlToPojoConvertingTest() {
 		try (InputStream is = this.getClass().getResourceAsStream("./complicate.xml")) {
 			
