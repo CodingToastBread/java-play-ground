@@ -1,13 +1,20 @@
 package coding.toast.bread.spring.spel;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,20 +70,51 @@ public class SpringExpressionLangTests {
 	@Value("{1,2,3,4,5}")
 	private List<String> list;
 	
+	// Even, as shown in the following code,
+	// you can even retrieve the result value through method invocation!
+	@Value("#{T(java.time.LocalDateTime).now()}")
+	private LocalDateTime now;
+	
+	// you can do much more complicated process if you want.
+	@Value("#{T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(T(java.time.LocalDateTime).now())}")
+	private String formattedDateString;
+	
+	// Bean References test
+	@TestConfiguration
+	static class SpringExpressionLangTestConfig {
+	
+		@Bean
+		public Map<String,String> myMap() {
+			return Map.of("good", "job");
+		}
+	
+	}
+	
+	@Value("#{myMap}")
+	private Map<String, String> mapValue;
+	
 	// reads properties from application.properties.
-	// If the key 'no.such.value.here' does not exist in the properties file, the field is injected with a
-	// default value of 'some day' as a string.
+	// If the key 'no.such.value.here' does not exist in the properties file,
+	// the field is injected with a default value of 'some day' as a string.
 	@Value("${no.such.value.here: some day}")
 	private String propertyValueWithDefault;
+	
 	
 	// almost the same one, but give the default value using SpEL
 	@Value("${no.such.value.here: #{'some day'}}")
 	private String propertyValueComplexDefault;
 	
+	
+	/**
+	 * We're not performing any validation tests.<br>
+	 * We're simply logging the output to visually confirm what values were passed in.<br>
+	 */
 	@Test
 	@DisplayName("SpEL parser test using @Value Annotation")
 	void SpELWithValueAnnotationTest() {
-		// no assert check. just watch what value is injected.
+		log.info("mapValue = {}", mapValue);
+		log.info("now = {}", now);
+		log.info("formattedDateString = {}", formattedDateString);
 		log.info("userHome = {}", userHome);
 		log.info("osName = {}", osName);
 		log.info("tellMeYourOs = {}", tellMeYourOs);
@@ -89,7 +127,7 @@ public class SpringExpressionLangTests {
 	
 	
 	@Test
-	@DisplayName("test without spring application context")
+	@DisplayName("Test with SpelExpressionParser")
 	void SpeLParserTest() {
 		
 		SpelExpressionParser parser = new SpelExpressionParser();
@@ -115,6 +153,7 @@ public class SpringExpressionLangTests {
 		@SuppressWarnings("rawtypes")
 		List list = (List) parser.parseExpression("{1,2,3,4}").getValue();
 		assertThat(list).containsExactly(1, 2, 3, 4);
+	
 		
 	}
 }
