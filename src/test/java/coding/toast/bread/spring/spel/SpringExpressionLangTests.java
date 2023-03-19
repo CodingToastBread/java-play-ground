@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -79,19 +80,34 @@ public class SpringExpressionLangTests {
 	@Value("#{T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(T(java.time.LocalDateTime).now())}")
 	private String formattedDateString;
 	
-	// Bean References test
+	
+	// Bean References test(1)
 	@TestConfiguration
 	static class SpringExpressionLangTestConfig {
+		
+		@Component("testMeBean")
+		static class TestMe {
+			private String name = "my Name Is 'testMeBean'";
+			
+			public String getName () {
+				return name;
+			}
+		}
 	
 		@Bean
 		public Map<String,String> myMap() {
 			return Map.of("good", "job");
 		}
-	
 	}
 	
+	// Bean References test(2)
 	@Value("#{myMap}")
 	private Map<String, String> mapValue;
+	
+	// Bean References test(3)
+	@Value("#{testMeBean}")
+	private SpringExpressionLangTestConfig.TestMe testMe;
+	
 	
 	// reads properties from application.properties.
 	// If the key 'no.such.value.here' does not exist in the properties file,
@@ -104,6 +120,18 @@ public class SpringExpressionLangTests {
 	@Value("${no.such.value.here: #{'some day'}}")
 	private String propertyValueComplexDefault;
 	
+	// if you want use ${} as string value inside the #{},
+	// you have to wrap with single quote like below:
+	@Value("#{'${my.number.is:}' eq '1'}")
+	private Boolean isOne;
+	
+	// @Value("#{${my.number.is}}")
+	// private String myNameIs;
+	//
+	// ==> will this work? it might be, or not.
+	//     because the property value you read should be the
+	//     "bean name" which is already registered in Application Context.
+	
 	
 	/**
 	 * We're not performing any validation tests.<br>
@@ -112,6 +140,8 @@ public class SpringExpressionLangTests {
 	@Test
 	@DisplayName("SpEL parser test using @Value Annotation")
 	void SpELWithValueAnnotationTest() {
+		log.info("isOne : {}", isOne);
+		log.info("testMe.getName() => {}", testMe.getName());
 		log.info("mapValue = {}", mapValue);
 		log.info("now = {}", now);
 		log.info("formattedDateString = {}", formattedDateString);
