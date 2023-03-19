@@ -36,3 +36,8 @@ Here is a list of tasks that I have done so far.
 
 <br>
 
+- Spring-related code 
+  - [Simple SpEL test](src/test/java/coding/toast/bread/spring/spel/SpringExpressionLangTests.java) 
+
+<br>
+
