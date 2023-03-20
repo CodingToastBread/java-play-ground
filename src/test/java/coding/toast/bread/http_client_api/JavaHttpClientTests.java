@@ -1,17 +1,34 @@
 package coding.toast.bread.http_client_api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.internal.Uris;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.*;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.AssertionErrors.fail;
 
@@ -33,6 +50,14 @@ import static org.springframework.test.util.AssertionErrors.fail;
 public class JavaHttpClientTests {
 
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+    
+    // predefine Http Request body contents
+    private static final Map<String, ?> httpBody = Map.of(
+        "title", "toast bread",
+        "body", "toast bread responseBody",
+        "userId", 2314
+    );
 
     @Test
     @DisplayName("Retrieve data using HTTP GET method")
@@ -43,9 +68,8 @@ public class JavaHttpClientTests {
                 .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
                 .GET()
                 .headers(
-                        "Content-Type", "application/json",
-                        "Accept", "application/json;charset=UTF-8"
-                )
+                    "Content-Type", "application/json",
+                    "Accept", "application/json;charset=UTF-8")
                 .timeout(Duration.ofSeconds(2))
                 .version(HttpClient.Version.HTTP_2)
                 .build();
@@ -58,27 +82,17 @@ public class JavaHttpClientTests {
         // ==>         .queryParam("userName", "toastBread")
         // ==>         .build().toUri();
 
-
-        // Create a new Http Client using Http Request Object you just made
-        HttpClient httpClient = HttpClient.newBuilder()
-                .authenticator(new Authenticator() { // send basic authentication info (if you need to)
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("id", "password".toCharArray());
-                    }
-                })
-                .followRedirects(HttpClient.Redirect.ALWAYS)
-                .build();
-
+        // the code
+        HttpClient httpClient = HttpClient.newHttpClient();
         try {
-            HttpResponse<String> httpResponse = httpClient.send(getMethodRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            assertThat(httpResponse.statusCode()).isEqualTo(200);
+            
+            HttpResponse<String> httpResponse
+                = httpClient.send(getMethodRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            
+            // just test whether http status code is 200 or not
+            assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
             String body = httpResponse.body();
             log.info("http response body:\n {}", body);
-            assertThat(body.contains("userId")).isTrue();
-            assertThat(body.contains("id")).isTrue();
-            assertThat(body.contains("title")).isTrue();
-            assertThat(body.contains("body")).isTrue();
         } catch (IOException | InterruptedException e) {
             fail(e.getMessage());
         }
@@ -87,41 +101,105 @@ public class JavaHttpClientTests {
 
     @Test
     @DisplayName("Send data using HTTP POST method")
-    void HttpClientPostMethodTest() {
-        log.info("Working in progress...");
-        //Setting Http Request...
-
-
-
-        // Create a new Http Client using Http Request Object you just made
-
-
-        // send http request and retrieve the data from the web api
+    void HttpClientPostMethodTest() throws IOException, InterruptedException {
+        
+        // creating HttpRequest
+        HttpRequest postHttpMethodRequest = HttpRequest.newBuilder()
+            .header("Content-Type", "application/json;charset=UTF-8")
+            // .header("Accept", "application/json")
+            .timeout(Duration.ofSeconds(2))
+            .version(HttpClient.Version.HTTP_2)
+            // .POST(noBody()) // if you want nothing to send on the http responseBody...
+            .POST(ofString(mapper.writeValueAsString(httpBody)))
+            .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
+            .build();
+    
+        
+        // create HttpClient and send request
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> httpResponse
+            = httpClient.send(postHttpMethodRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        
+        // log response headers and body.
+        log.info("http headers after Post Method Request:\n{}", httpResponse.headers());
+        log.info("httpBody after Post method request:\n{}", httpResponse.body());
+        
+        
+        // test~ test~
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        testBody(httpResponse.body(), httpBody);
+        
+        
+        
+        // you can get a headers map~
+        HttpHeaders headers = httpResponse.headers();
+        Map<String, List<String>> map = headers.map();
+        String location1 = map.get("location").get(0);
+        
+        // or you can read it directly from headers object
+        String location = headers.firstValue("location").orElse("");
+        
+        // checking created resource location.
+        assertThat(location).isEqualTo("http://jsonplaceholder.typicode.com/posts/101");
+    
     }
-
+    
+    // testing Json Body key, value
+    private static void testBody(String responseBody, Map<String, ?> mapHttpBody) throws JsonProcessingException {
+        
+        JsonNode responseNode = mapper.readValue(responseBody, ObjectNode.class);
+        ObjectNode compareNode = mapper.convertValue(mapHttpBody, ObjectNode.class);
+        
+        System.out.println("compareNode = " + compareNode);
+        
+        assertThat(responseNode.path("title").asText())
+            .isEqualTo(compareNode.path("title").asText());
+        
+        assertThat(responseNode.path("body").asText())
+            .isEqualTo(compareNode.path("body").asText());
+        
+        assertThat(responseNode.path("userId").asText())
+            .isEqualTo(compareNode.path("userId").asText());
+    }
+    
     @Test
     @DisplayName("Send data using HTTP PUT method")
-    void HttpClientPutMethodTest() {
-        log.info("Working in progress...");
-        //Setting Http Request...
-
-
+    void HttpClientPutMethodTest() throws IOException, InterruptedException {
+        // REMARK: there is no PATCH (WHY?). if you want to use PATCH
+        //          ==> .method("PATCH", ...)
+    
+        HttpRequest putMethodRequest = HttpRequest.newBuilder()
+            .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
+            .header("Content-Type", "application/json")
+            .timeout(Duration.ofSeconds(2))
+            .PUT(ofString(mapper.writeValueAsString(httpBody)))
+            .build();
+        
         // Create a new Http Client using Http Request Object you just made
-
-
-        // send http request and retrieve the data from the web api
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> httpResponse
+            = httpClient.send(putMethodRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    
+        System.out.println(httpResponse.headers());
+        System.out.println(httpResponse.body());
+    
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
     @DisplayName("Send HTTP DELETE request")
-    void HttpClientDeleteMethodTest() {
-        log.info("Working in progress...");
+    void HttpClientDeleteMethodTest() throws IOException, InterruptedException {
+        
         //Setting Http Request...
-
-
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
+            .DELETE().build();
+    
+    
         // Create a new Http Client using Http Request Object you just made
-
-
-        // send http request and retrieve the data from the web api
+        HttpResponse<Void> httpResponse
+            = HttpClient.newHttpClient().send(httpRequest, HttpResponse.BodyHandlers.discarding()); // nothing to get
+    
+        assertThat(httpResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
