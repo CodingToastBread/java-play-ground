@@ -4,29 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.internal.Uris;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.net.*;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +31,7 @@ import static org.springframework.test.util.AssertionErrors.fail;
  * <ul>
  *     <li>GET: https://jsonplaceholder.typicode.com/posts/1</li>
  *     <li>POST: https://jsonplaceholder.typicode.com/posts (content-type: application/json)</li>
- *     <li>PATCH: https://jsonplaceholder.typicode.com/posts/1 (content-type: application/json)</li></li>
+ *     <li>PUT: https://jsonplaceholder.typicode.com/posts/1 (content-type: application/json)</li></li>
  *     <li>DELETE: https://jsonplaceholder.typicode.com/posts/1</li>
  * </ul>
  * @see <a href="https://jsonplaceholder.typicode.com/guide/">jsonplaceholder guide</a>
