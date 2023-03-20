@@ -38,6 +38,7 @@ Here is a list of tasks that I have done so far.
 
 - Http Client API
   - [playing with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientTests.java)
+  - [download video with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientDownLoadFileTests.java)
 
 <br>
 
