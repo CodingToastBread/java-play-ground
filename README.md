@@ -36,6 +36,12 @@ Here is a list of tasks that I have done so far.
 
 <br>
 
+- Http Client API
+  - [playing with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientTests.java)
+
+<br>
+
+
 - Spring-related code 
   - [Simple SpEL test](src/test/java/coding/toast/bread/spring/spel/SpringExpressionLangTests.java) 
 
