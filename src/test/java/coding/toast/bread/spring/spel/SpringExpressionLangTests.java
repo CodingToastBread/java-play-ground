@@ -68,7 +68,7 @@ public class SpringExpressionLangTests {
 	private String javaHome;
 	
 	// can create list(also array!)
-	@Value("{1,2,3,4,5}")
+	@Value("1,2,3,4,5")
 	private List<String> list;
 	
 	// Even, as shown in the following code,
