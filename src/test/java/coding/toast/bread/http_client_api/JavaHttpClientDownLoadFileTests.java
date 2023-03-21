@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Simple Video Downloading Using Java HttpClient API
+ * Simple Video Downloading Using Java HttpClient API<br>
+ * <strong>Note: This Test Download a *.mp4 video from <a href="https://sample-videos.com">sample-videos.com</a>.<br>
+ * The file download location for this test code is the "{user home directory}/sample_video/" of the local computer user</strong>
  */
 public class JavaHttpClientDownLoadFileTests {
 	
@@ -28,7 +30,10 @@ public class JavaHttpClientDownLoadFileTests {
 		
 		Path sampleVideoPath
 			= Path.of(System.getProperty("user.home")).resolve("sample_video");
-		
+
+		// if the path doesn't exist, create one.
+		Files.createDirectories(sampleVideoPath);
+
 		HttpResponse<Path> video1 = httpClient.send(httpRequest,
 			HttpResponse.BodyHandlers.ofFile(sampleVideoPath.resolve("1.mp4")));
 		
