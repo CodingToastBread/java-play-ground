@@ -22,8 +22,6 @@ import java.util.Map;
  * <ul>
  *     <li>GET: https://jsonplaceholder.typicode.com/posts/1</li>
  *     <li>POST: https://jsonplaceholder.typicode.com/posts (content-type: application/json)</li>
- *     <li>PUT: https://jsonplaceholder.typicode.com/posts/1 (content-type: application/json)</li></li>
- *     <li>DELETE: https://jsonplaceholder.typicode.com/posts/1</li>
  * </ul>
  * @see <a href="https://docs.oracle.com/javase/7/docs/api/java/net/URLConnection.html#connect()">URLConnection</a>
  */
