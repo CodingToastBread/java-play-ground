@@ -58,12 +58,11 @@ public class JavaHttpUrlConnectionTests {
         
         int responseCode = urlConnection.getResponseCode();
     
-        // You can explicitly establish a connection with an external server by calling the connect method,
+        // You can explicitly establish a connection with an external server by calling the "urlConnection.connect()" method,
         // but the following methods also implicitly attempt to establish a connection with an external server.
         //
-        // - urlConnection.getContentLength();
-        // - getResponseCode(),
-        // - connect(),
+        // - getContentLength()
+        // - getResponseCode()
         // - getInputStream()
         // - getOutputStream()
     
