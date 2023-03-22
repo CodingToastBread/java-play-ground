@@ -43,6 +43,10 @@ public class JavaHttpUrlConnectionTests {
         urlConnection.setConnectTimeout(2000);
         urlConnection.setReadTimeout(2000);
         urlConnection.setRequestProperty("key", "val");
+
+        // HttpUrlConnection supports only Http/1.1.
+        // so, if you want to suppress network connection latency,
+        // you need to add headers (Connection: keep-alive)
         urlConnection.setRequestProperty("Connection", "keep-alive");
         urlConnection.setInstanceFollowRedirects(true);
     }
@@ -89,8 +93,8 @@ public class JavaHttpUrlConnectionTests {
             }
         }
     
-        // urlConnection.disconnect();
-        
+        urlConnection.disconnect();
+
         // need to copy them to another? use StreamUtils.copy(inputStream, outputStream)
         // StreamUtils.copy()
         
