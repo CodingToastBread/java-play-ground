@@ -1,18 +1,19 @@
 package coding.toast.bread.http_client_api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.StreamUtils;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * This is a test class that tests the Java built-in Class, HttpUrlConnection class.
@@ -109,20 +110,50 @@ public class JavaHttpUrlConnectionTests {
     }
     
     @Test
-    void postMethodTest() {
-        log.info("working on it !!!");
+    void postMethodTest() throws IOException {
+    
+        URL url = new URL("https://jsonplaceholder.typicode.com/posts/");
+        HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+        setDefaultUrlConnection(urlConnection, "POST");
+        urlConnection.setRequestProperty("Content-Type", "application/json");
+        urlConnection.setRequestProperty("Accept", "application/json");
+        
+        // ensure the connection will send Content
+        urlConnection.setDoOutput(true);
+        
+        
+        // connection occurs at this moment!
+        try (DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream())) {
+            String content = mapper.writeValueAsString(httpBody);
+            System.out.println("content = " + content);
+            wr.write(content.getBytes(StandardCharsets.UTF_8));
+        }
+        
+        // actually, you can just write content using only ObjectMapper.
+        // mapper.writeValue(urlConnection.getOutputStream(), httpBody);
+    
+        // Choice 1: Read Content without ObjectMapper
+        /*
+        StringBuilder bodyBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
 
+            String readLine = "";
+            while ((readLine = br.readLine()) != null) {
+                bodyBuilder.append(readLine);
+            }
+        }
+
+        String responseBody = bodyBuilder.toString();
+        */
+    
+        // Choice 2: Read Content with ObjectMapper
+        JsonNode responseBody = mapper.readValue(urlConnection.getInputStream(), JsonNode.class);
+        log.info("responseBody : {}", responseBody);
+    
+        urlConnection.disconnect();
+        
     }
 
-    @Test
-    void putMethodTest() {
-        log.info("working on it !!!");
-
-    }
-
-    @Test
-    void deleteMethodTest() {
-        log.info("working on it !!!");
-
-    }
+    // I think it is too verbose coding Put And Delete.
+    // I'll just skip it! 😋
 }
