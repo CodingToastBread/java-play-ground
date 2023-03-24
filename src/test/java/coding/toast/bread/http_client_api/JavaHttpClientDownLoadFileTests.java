@@ -78,7 +78,6 @@ public class JavaHttpClientDownLoadFileTests {
 			String contentLengthString = videoStream.headers().firstValue("content-length").orElseGet(() -> "");
 			
 			int contentLength = Integer.parseInt(contentLengthString);
-			
 			try (InputStream is = videoStream.body();
 			     OutputStream os = Files.newOutputStream(sampleVideoPath.resolve("loading.mp4"), StandardOpenOption.CREATE)
 			) {
@@ -88,9 +87,11 @@ public class JavaHttpClientDownLoadFileTests {
 				int readTotalByte = 0;
 				while ((readByteLength = is.read(buffer, 0, bufferSize)) >= 0) {
 					readTotalByte += readByteLength;
-					log.info("{} % downloaded...",
-						 roundString((((double) readTotalByte) / contentLength) * 100, 2)
-					);
+					
+					String prettyPercent = roundString(contentLength, readTotalByte, 2);
+					
+					log.info("{} % downloaded...", prettyPercent);
+					
 					os.write(buffer, 0, readByteLength);
 				}
 				log.info("download completed!!!");
@@ -100,16 +101,12 @@ public class JavaHttpClientDownLoadFileTests {
 		} catch (InterruptedException e) {
 			fail("Request canceled!!");
 		}
-		
 	}
 	
-	private String roundString(double value, int cutting) {
-		double pow = Math.pow(10, cutting);
-		double v = Math.round(value * pow) / pow;
-		return String.valueOf(v);
+	private String roundString(double total, double partial, int range) {
+		double v1 = (((double) partial) / total) * 100;
+		double pow = Math.pow(10, range);
+		double v2 = Math.round(v1 * pow) / pow;
+		return String.valueOf(v2);
 	}
-	
-	// how can i cancel my request...?
-	// https://stackoverflow.com/questions/55209385/cancellation-of-http-request-in-java-11-httpclient
-	
 }
