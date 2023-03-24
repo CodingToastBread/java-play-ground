@@ -65,7 +65,7 @@ public class JavaHttpClientDownLoadFileTests {
 	
 	
 	@Test
-	@DisplayName("Showing Loading Process While Downloading")
+	@DisplayName("Show Loading Process While Downloading")
 	void showLoadingBarTest() {
 		
 		HttpClient httpClient = HttpClient.newHttpClient();
