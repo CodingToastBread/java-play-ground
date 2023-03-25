@@ -5,7 +5,8 @@ import coding.toast.bread.proxy.vo.Worker;
 import java.util.*;
 
 /**
- *
+ * This Class is for {@link coding.toast.bread.proxy proxy test classes}<br>
+ * very simple Class that manages {@link Worker}
  */
 public class WorkerManageServiceImpl implements WorkerManageService {
 	
