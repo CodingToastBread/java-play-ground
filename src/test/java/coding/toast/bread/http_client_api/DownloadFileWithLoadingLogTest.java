@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class DownloadFileWithLoadingLogTest {
 	
 	private static final String FILE_URL = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4";
-	private static final String FILE_NAME = "big_buck_bunny_720p_2mb.mp4";
+	private static final String FILE_NAME = System.getProperty("user.home") + File.separator + "big_buck_bunny_720p_2mb.mp4";
 	private static long downloadedBytes = 0L;
 	
 	@Test
@@ -43,8 +43,7 @@ public class DownloadFileWithLoadingLogTest {
 		
 		// send Http and get response
 		HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
-		Path sampleVideoDirectory = Path.of(System.getProperty("user.home")).resolve("sample_video");
-		Path filePath = sampleVideoDirectory.resolve(FILE_NAME);
+		Path filePath = Path.of(FILE_NAME);
 		
 		// if you want percentage, use the contentLength!
 		// long contentLength = response.headers().firstValue("Content-Length").map(Long::parseLong).orElse(-1L);
