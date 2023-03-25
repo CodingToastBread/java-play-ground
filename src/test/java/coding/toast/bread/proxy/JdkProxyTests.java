@@ -19,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Java Built-in Proxy API Test Class<br>
+ *
+ * @see WorkerManageServiceImpl
+ * @see Worker
  */
 @Slf4j
 public class JdkProxyTests {
@@ -41,6 +44,7 @@ public class JdkProxyTests {
 	
 	
 	@Test
+	@DisplayName("how to use Proxy.newProxyInstance?")
 	void simpleProxyTest() {
 		
 		WorkerManageService proxyService = (WorkerManageService) Proxy.newProxyInstance(
@@ -61,7 +65,7 @@ public class JdkProxyTests {
 	
 	
 	@Test
-    @DisplayName("Logs 👍 for all method calls")
+	@DisplayName("Logs 👍 for all method calls")
 	void DecorateLoggingProxyTest() {
 		
 		WorkerManageService proxyService = (WorkerManageService) Proxy.newProxyInstance(
@@ -74,106 +78,104 @@ public class JdkProxyTests {
 		Worker compareWorker = new Worker(1L, "Norberto Weyand", DEPT.DEVELOP);
 		assertThat(workerWithId).isEqualTo(compareWorker);
 	}
-    
-    
-    /**
-     * relate with {@link #DecorateLoggingProxyTest() DecorateLoggingProxy Test Method}
-     */
-    static final class ThumbsUpDecoInvocationHandler implements InvocationHandler {
-        private final Object proxyTarget;
-    
-        private ThumbsUpDecoInvocationHandler(Object proxyTarget) {
-            Objects.requireNonNull(proxyTarget);
-            this.proxyTarget = proxyTarget;
-        }
-    
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            log.info("👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍");
-        
-            Object returnVal = method.invoke(proxyTarget, args);
-            log.info("method return value = {}", returnVal);
-            
-            log.info("👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍");
-            return returnVal;
-        }
-    }
-    
-    
-    @Test
-    @DisplayName("If there is a name value in the return value, it will be hidden.")
-    void HideSensitiveProxyTest() {
-        
-        WorkerManageService proxyService = (WorkerManageService) Proxy.newProxyInstance(
-            WorkerManageService.class.getClassLoader(),
-            new Class[]{WorkerManageService.class},
-            new HideSensitiveInvocationHandler(service)
-        );
-        String securityString = HideSensitiveInvocationHandler.securityString;
-        
-        Worker workerWithId = proxyService.findWorkerWithId(1L);
-        Worker findWorker = new Worker(workerWithId.id(), securityString, workerWithId.dept());
-    
-        assertThat(workerWithId).isEqualTo(findWorker);
-    
-        assertThat(proxyService.workerList()).allSatisfy(worker
-            -> assertThat(worker.name()).isEqualTo(securityString));
-    }
-    
-    
-    /**
-     * This InvocationHandler performs encryption if the return value contains a name.
-     * (relate with {@link #HideSensitiveProxyTest() EncryptedReturnValTest Test Method})<br>
-     * <br>
-     * The following are the methods that expose names:<br>
-     * <ul>
-     *   <li>{@link WorkerManageService#workerList() workerList}</li>
-     *   <li>{@link WorkerManageService#workerListSort(Comparator) workerListSort}</li>
-     *   <li>{@link WorkerManageService#findWorkerWithId(long) findWorkerWithId}</li>
-     * </ul>
-     */
-    static final class HideSensitiveInvocationHandler implements InvocationHandler {
-        private final Object proxyTarget;
-        
-        private final List<String> targetMethodNameList = List.of(
-            "workerList",
-            "workerListSort",
-            "findWorkerWithId"
-        );
-        static final String securityString = "[SENSITIVE INFORMATION CANNOT BE EXPOSED]";
-    
-        private HideSensitiveInvocationHandler(Object proxyTarget) {
-            Objects.requireNonNull(proxyTarget);
-            this.proxyTarget = proxyTarget;
-        }
-        
-        @Override
-        @SuppressWarnings("unchecked")
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            
-            Object returnVal = method.invoke(proxyTarget, args);
-    
-            String name = method.getName();
-            if (targetMethodNameList.contains(name)) {
-                log.info("method name: {}", name);
-                switch (name) {
-                    case "workerList", "workerListSort" -> {
-                        List<Worker> returnVal1 = (List<Worker>) returnVal;
-                        returnVal = returnVal1.stream()
-                            .map(worker -> new Worker(worker.id(), securityString, worker.dept()))
-                            .toList();
-                    }
-                    case "findWorkerWithId" -> {
-                        Worker worker = (Worker) returnVal;
-                        returnVal = new Worker(worker.id(), securityString, worker.dept());
-                    }
-                    default -> throw new IllegalStateException("Unexpected value: " + name);
-                }
-            }
-            
-            return returnVal;
-        }
-    }
-    
-    
+	
+	
+	/**
+	 * relate with {@link #DecorateLoggingProxyTest() DecorateLoggingProxy Test Method}
+	 */
+	static final class ThumbsUpDecoInvocationHandler implements InvocationHandler {
+		private final Object proxyTarget;
+		
+		private ThumbsUpDecoInvocationHandler(Object proxyTarget) {
+			Objects.requireNonNull(proxyTarget);
+			this.proxyTarget = proxyTarget;
+		}
+		
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			log.info("👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍");
+			
+			Object returnVal = method.invoke(proxyTarget, args);
+			log.info("method return value = {}", returnVal);
+			
+			log.info("👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍👍");
+			return returnVal;
+		}
+	}
+	
+	
+	@Test
+	@DisplayName("If there is a name value in the return value, it will be hidden.")
+	void HideSensitiveProxyTest() {
+		
+		WorkerManageService proxyService = (WorkerManageService) Proxy.newProxyInstance(
+			WorkerManageService.class.getClassLoader(),
+			new Class[]{WorkerManageService.class},
+			new HideSensitiveInvocationHandler(service)
+		);
+		String securityString = HideSensitiveInvocationHandler.securityString;
+		
+		Worker workerWithId = proxyService.findWorkerWithId(1L);
+		Worker findWorker = new Worker(workerWithId.id(), securityString, workerWithId.dept());
+		
+		assertThat(workerWithId).isEqualTo(findWorker);
+		
+		assertThat(proxyService.workerList()).allSatisfy(worker
+			-> assertThat(worker.name()).isEqualTo(securityString));
+	}
+	
+	
+	/**
+	 * This InvocationHandler performs encryption if the return value contains a name.
+	 * (relate with {@link #HideSensitiveProxyTest() EncryptedReturnValTest Test Method})<br>
+	 * <br>
+	 * The following are the methods that expose names:<br>
+	 * <ul>
+	 *   <li>{@link WorkerManageService#workerList() workerList}</li>
+	 *   <li>{@link WorkerManageService#workerListSort(Comparator) workerListSort}</li>
+	 *   <li>{@link WorkerManageService#findWorkerWithId(long) findWorkerWithId}</li>
+	 * </ul>
+	 */
+	static final class HideSensitiveInvocationHandler implements InvocationHandler {
+		private final Object proxyTarget;
+		
+		private final List<String> targetMethodNameList = List.of(
+			"workerList",
+			"workerListSort",
+			"findWorkerWithId"
+		);
+		static final String securityString = "[SENSITIVE INFORMATION CANNOT BE EXPOSED]";
+		
+		private HideSensitiveInvocationHandler(Object proxyTarget) {
+			Objects.requireNonNull(proxyTarget);
+			this.proxyTarget = proxyTarget;
+		}
+		
+		@Override
+		@SuppressWarnings("unchecked")
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			
+			Object returnVal = method.invoke(proxyTarget, args);
+			
+			String name = method.getName();
+			if (targetMethodNameList.contains(name)) {
+				log.info("method name: {}", name);
+				switch (name) {
+					case "workerList", "workerListSort" -> {
+						List<Worker> returnVal1 = (List<Worker>) returnVal;
+						returnVal = returnVal1.stream()
+							.map(worker -> new Worker(worker.id(), securityString, worker.dept()))
+							.toList();
+					}
+					case "findWorkerWithId" -> {
+						Worker worker = (Worker) returnVal;
+						returnVal = new Worker(worker.id(), securityString, worker.dept());
+					}
+					default -> throw new IllegalStateException("Unexpected value: " + name);
+				}
+			}
+			
+			return returnVal;
+		}
+	}
 }
