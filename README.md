@@ -45,6 +45,7 @@ Here is a list of tasks that I have done so far.
 
 - Proxy API
   - [java built-in proxy test](src/test/java/coding/toast/bread/proxy/JdkProxyTests.java) 
+  - [how to create CGLIB PROXY](src/test/java/coding/toast/bread/proxy/CglibProxyTests.java)
 
 <br>
 
