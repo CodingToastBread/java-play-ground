@@ -13,6 +13,12 @@ public class WorkerManageServiceImpl implements WorkerManageService {
 	// private final java.util.concurrent.ConcurrentLinkedQueue<Worker> workerList
 	//             = new java.util.concurrent.ConcurrentLinkedQueue<>();
 	
+	
+	// this constructor is for CGLIB Proxy.
+	// CGLIB Proxy needs default constructor for new proxy object.
+	protected WorkerManageServiceImpl() {
+	}
+	
 	private final ArrayList<Worker> workerList = new ArrayList<>();
 	
 	public WorkerManageServiceImpl(List<Worker> workers) {
