@@ -108,18 +108,26 @@ public class JdkProxyTests {
 	@DisplayName("If there is a name value in the return value, it will be hidden.")
 	void HideSensitiveProxyTest() {
 		
+		// create proxy
 		WorkerManageService proxyService = (WorkerManageService) Proxy.newProxyInstance(
 			WorkerManageService.class.getClassLoader(),
 			new Class[]{WorkerManageService.class},
 			new HideSensitiveInvocationHandler(service)
 		);
+		
+		// get security String
 		String securityString = HideSensitiveInvocationHandler.securityString;
 		
+		// find Worker who has id = 1
 		Worker workerWithId = proxyService.findWorkerWithId(1L);
+		
+		// create testWorker
 		Worker findWorker = new Worker(workerWithId.id(), securityString, workerWithId.dept());
 		
+		// test (1)
 		assertThat(workerWithId).isEqualTo(findWorker);
 		
+		// test (2)
 		assertThat(proxyService.workerList()).allSatisfy(worker
 			-> assertThat(worker.name()).isEqualTo(securityString));
 	}
@@ -152,30 +160,34 @@ public class JdkProxyTests {
 		}
 		
 		@Override
-		@SuppressWarnings("unchecked")
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			
 			Object returnVal = method.invoke(proxyTarget, args);
 			
 			String name = method.getName();
 			if (targetMethodNameList.contains(name)) {
-				log.info("method name: {}", name);
-				switch (name) {
-					case "workerList", "workerListSort" -> {
-						List<Worker> returnVal1 = (List<Worker>) returnVal;
-						returnVal = returnVal1.stream()
-							.map(worker -> new Worker(worker.id(), securityString, worker.dept()))
-							.toList();
-					}
-					case "findWorkerWithId" -> {
-						Worker worker = (Worker) returnVal;
-						returnVal = new Worker(worker.id(), securityString, worker.dept());
-					}
-					default -> throw new IllegalStateException("Unexpected value: " + name);
-				}
+				log.debug("method name: {}", name);
+				returnVal = hideNameValue(name, returnVal);
 			}
 			
 			return returnVal;
+		}
+		
+		@SuppressWarnings("unchecked")
+		private Object hideNameValue(String invokedMethodName, Object convertTarget) {
+			return switch (invokedMethodName) {
+				case "workerList", "workerListSort" -> {
+					List<Worker> returnVal1 = (List<Worker>) convertTarget;
+					yield returnVal1.stream()
+						.map(worker -> new Worker(worker.id(), securityString, worker.dept()))
+						.toList();
+				}
+				case "findWorkerWithId" -> {
+					Worker worker = (Worker) convertTarget;
+					yield new Worker(worker.id(), securityString, worker.dept());
+				}
+				default -> throw new IllegalStateException("Unexpected value: " + invokedMethodName);
+			};
 		}
 	}
 }
