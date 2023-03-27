@@ -50,6 +50,11 @@ Here is a list of tasks that I have done so far.
 
 <br>
 
+- Converting
+  - [Convert Test Using Jackson ObjectMapper](src/test/java/coding/toast/bread/converting/JacksonConvertTests.java) 
+
+<br>
+
 - Spring-related code 
   - [Simple SpEL test](src/test/java/coding/toast/bread/spring/spel/SpringExpressionLangTests.java) 
 
