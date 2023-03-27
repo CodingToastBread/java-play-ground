@@ -8,10 +8,16 @@ import coding.toast.bread.proxy.vo.Worker;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.MethodMatcher;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,7 +73,84 @@ public class ProxyFactoryTests {
 		assertThat(AopUtils.isCglibProxy(proxy2)).isTrue();
 		
 	}
-	
+
+
+	@Test
+	@DisplayName("how to use point cut")
+	void pointCutTest() {
+		ProxyFactory proxyFactory = new ProxyFactory(implInterfaceProxyTarget);
+		proxyFactory.addAdvisor(new DefaultPointcutAdvisor(new MyPointcut(), new MyAdvice()));
+		WorkerManageService proxyService = (WorkerManageService) proxyFactory.getProxy();
+
+		// get security String
+		String securityString = MyAdvice.securityString;
+
+		// find Worker who has id = 1
+		Worker workerWithId = proxyService.findWorkerWithId(1L);
+
+		// create testWorker
+		Worker findWorker = new Worker(workerWithId.id(), securityString, workerWithId.dept());
+
+		// test (1)
+		assertThat(workerWithId).isEqualTo(findWorker);
+
+		// test (2)
+		assertThat(proxyService.workerList()).allSatisfy(worker
+				-> assertThat(worker.name()).isEqualTo(securityString));
+	}
+
+	static class MyAdvice implements MethodInterceptor {
+
+		static final String securityString = "[SENSITIVE INFORMATION CANNOT BE EXPOSED]";
+
+		@Override
+		public Object invoke(MethodInvocation invocation) throws Throwable {
+			Object proceed = invocation.proceed();
+			if (proceed instanceof List<?> workerList) {
+				return workerList.stream()
+						.map(worker -> new Worker(((Worker) worker).id(), securityString, ((Worker) worker).dept()))
+						.toList();
+			} else if (proceed instanceof Worker worker) {
+				return new Worker(worker.id(), securityString, worker.dept());
+			}
+			throw new IllegalStateException("Unexpected value: " + invocation.getMethod().getName());
+		}
+	}
+
+	static class MyPointcut implements Pointcut {
+
+		private final List<String> targetMethodNames = List.of(
+				"workerList",
+				"workerListSort",
+				"findWorkerWithId"
+		);
+
+		@Override
+		public ClassFilter getClassFilter() {
+			return ClassFilter.TRUE;
+		}
+
+		@Override
+		public MethodMatcher getMethodMatcher() {
+			return new MethodMatcher() {
+				@Override
+				public boolean matches(Method method, Class<?> targetClass) {
+					return targetMethodNames.contains(method.getName());
+				}
+
+				@Override
+				public boolean isRuntime() {
+					return false;
+				}
+
+				@Override
+				public boolean matches(Method method, Class<?> targetClass, Object... args) {
+					throw new UnsupportedOperationException();
+				}
+			};
+		}
+
+	}
 }
 
 
