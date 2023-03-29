@@ -40,6 +40,7 @@ Here is a list of tasks that I have done so far.
   - [playing with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientTests.java)
   - [download video with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientDownLoadFileTests.java)
   - [HttpUrlConnection Practice](src/test/java/coding/toast/bread/http_client_api/JavaHttpUrlConnectionTests.java)
+  - [RestTemplate Practice](src/test/java/coding/toast/bread/http_client_api/RestTemplateTests.java)
 
 <br>
 
