@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://stackoverflow.com/questions/35232827/spring-boot-unit-test-ignores-logging-level -->
+<!-- https://stackoverflow.com/questions/50560184/which-takes-priority-logback-xml-or-logback-test-xml -->
+<configuration>
+    <!-- base.xml is a little bit ugly to me, I'll just use my custom ConsoleAppender 😋 -->
+    <!--
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <root level="debug"></root>
+    -->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="coding.toast.bread" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
