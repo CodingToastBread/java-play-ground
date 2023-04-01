@@ -1,7 +1,6 @@
 package coding.toast.bread.string_control;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -17,8 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Testing Spring's PropertyPlaceholderHelper class
  */
 public class PropertyPlaceholderHelperTest {
-	
-	ObjectMapper mapper = new ObjectMapper();
 	
 	@Test
 	@DisplayName("Create complex postgre ddl sql")
