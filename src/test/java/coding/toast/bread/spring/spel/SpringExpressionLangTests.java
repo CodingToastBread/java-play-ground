@@ -109,7 +109,7 @@ public class SpringExpressionLangTests {
 	private SpringExpressionLangTestConfig.TestMe testMe;
 	
 	
-	// reads properties from application.properties.
+	// reads properties from application.yml.
 	// If the key 'no.such.value.here' does not exist in the properties file,
 	// the field is injected with a default value of 'some day' as a string.
 	@Value("${no.such.value.here: some day}")
