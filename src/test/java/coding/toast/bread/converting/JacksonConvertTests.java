@@ -1,8 +1,9 @@
 package coding.toast.bread.converting;
 
+import coding.toast.bread.converting.dto.EmployeeDTO;
 import coding.toast.bread.converting.vo.Address;
+import coding.toast.bread.converting.vo.EmployeeVO;
 import coding.toast.bread.converting.vo.Person;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -103,5 +103,29 @@ public class JacksonConvertTests {
 		assertThat(person).isEqualTo(new Person("toast bread", 21, List.of("pizza", "hamburger")));
 	}
 	
+
+	
+	
+
+	
+	
+	@Test
+	@DisplayName("DTO -> VO, VO -> DTO")
+	void DtoToVoAndVodToDTOTest() throws JsonProcessingException {
+		
+		EmployeeDTO dtoObject = EmployeeDTO.builder().empId(1L).name("toast bread").build();
+		
+		EmployeeVO voObject = new EmployeeVO(1L, "toast bread");
+		
+		EmployeeVO employeeVO = mapper.convertValue(dtoObject, EmployeeVO.class);
+		
+		EmployeeDTO employeeDTO = mapper.convertValue(voObject, EmployeeDTO.class);
+		System.out.println("employeeDTO = " + employeeDTO);
+		
+		
+		String s = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(employeeVO);
+		System.out.println("s = " + s);
+		
+	}
 	
 }
