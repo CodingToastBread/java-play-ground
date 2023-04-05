@@ -54,6 +54,7 @@ Here is a list of tasks that I have done so far.
 
 - Converting
   - [Convert Test Using Jackson ObjectMapper](src/test/java/coding/toast/bread/converting/JacksonConvertTests.java) 
+  - [Copy values using Model Mapper](src/test/java/coding/toast/bread/converting/ModelMapperConvertTests.java) 
 
 <br>
 
