@@ -2,25 +2,22 @@ package coding.toast.bread.http_client_api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.list;
-import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 
@@ -75,7 +72,8 @@ public class RestTemplateTests {
 		// exchange is very handy when you have to convert complex Type Converting.
 		// look at the code below:
 		ResponseEntity<List<Posts>> listOfPosts
-			= restTemplate.exchange(getCopyBaseURI().build().toUri(), GET, EMPTY, new ParameterizedTypeReference<List<Posts>>() {});
+			= restTemplate.exchange(getCopyBaseURI().build().toUri(), GET, EMPTY, new ParameterizedTypeReference<>() {
+		});
 		log.debug("get First Posts : {}", listOfPosts.getBody().get(0));
 		
 		
@@ -89,6 +87,36 @@ public class RestTemplateTests {
 		JsonNode jsonNode = restTemplate.getForObject(uri, JsonNode.class);
 		log.debug("jsonNode Print : {}", jsonNode);
 		
+	}
+	
+	
+	@Test
+	void postMethodTest() {
+		ObjectNode jsonNodes = JsonNodeFactory.instance.objectNode();
+		jsonNodes.put("good", "job");
+		jsonNodes.put("nice", "work");
+		
+		ResponseEntity<JsonNode> postResult
+			= restTemplate.postForEntity(
+			getCopyBaseURI().build().toUri(),
+			jsonNodes,
+			JsonNode.class
+		);
+		
+		printEntity(postResult);
+		
+		
+		HttpEntity<JsonNode> requestEntity = new HttpEntity<>(jsonNodes);
+		
+		
+		ResponseEntity<Map<String, JsonNode>> result
+			= restTemplate.exchange(getCopyBaseURI().build().toUri(),
+			HttpMethod.POST,
+			requestEntity,
+			new ParameterizedTypeReference<>() {}
+		);
+		
+		printEntity(result);
 	}
 	
 	/**
