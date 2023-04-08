@@ -42,6 +42,7 @@ Here is a list of tasks that I have done so far.
   - [download video with Java HttpClient](src/test/java/coding/toast/bread/http_client_api/JavaHttpClientDownLoadFileTests.java)
   - [HttpUrlConnection Practice](src/test/java/coding/toast/bread/http_client_api/JavaHttpUrlConnectionTests.java)
   - [RestTemplate Practice](src/test/java/coding/toast/bread/http_client_api/RestTemplateTests.java)
+  - [Sending 100 requests at once](src/test/java/coding/toast/bread/http_client_api/SendingManyRequestAtOnceTest.java)
 
 <br>
 
