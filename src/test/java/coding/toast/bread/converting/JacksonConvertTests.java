@@ -7,6 +7,7 @@ import coding.toast.bread.converting.vo.Person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -126,6 +127,94 @@ public class JacksonConvertTests {
 		String s = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(employeeVO);
 		System.out.println("s = " + s);
 		
+	}
+	
+	
+	
+	@Test
+	@DisplayName("put some data in json array")
+	void dataInsertInJsonArrayTest() throws JsonProcessingException {
+		JsonNodeFactory instance = JsonNodeFactory.instance;
+		String jsonString =
+            """
+			{
+	           "detailFields":[
+	              {
+	                 "column":"area",
+	                 "comment":"area"
+	              },
+	              {
+	                 "column":"data",
+	                 "comment":"data"
+	              },
+	              {
+	                 "column":"year",
+	                 "comment":"year"
+	              }
+	           ],
+	           "searchCndFields":[
+	              {
+	                 "column":"data",
+	                 "comment":"data",
+	                 "groupCode":"CODE001"
+	              },
+	              {
+	                 "column":"year",
+	                 "comment":"year",
+	                 "groupCode":"CODE002"
+	              }
+	           ],
+	           "searchFields":[
+	              {
+	                 "column":"area",
+	                 "comment":"area"
+	              },
+	              {
+	                 "column":"data",
+	                 "comment":"data"
+	              },
+	              {
+	                 "column":"year",
+	                 "comment":"year"
+	              }
+	           ],
+	           "detailRepField":{
+	              "column":"area",
+	              "comment":"area"
+	           }
+	        }
+        """;
+		
+		ObjectNode jsonNode = mapper.readValue(jsonString, new TypeReference<>() {});
+		
+		System.out.println("jsonNode.toPrettyString() = " + jsonNode.toPrettyString());
+		
+		JsonNode detailFields = jsonNode.path("detailFields");
+		System.out.println("detailFields.toPrettyString() = " + detailFields.toPrettyString());
+		
+		if(detailFields.isArray()) {
+			ArrayNode arrayNode = (ArrayNode) detailFields;
+			for (JsonNode node : arrayNode) {
+				
+				Map<String, Object> groupCode = Map.of(
+					"groupCode", "CODE001",
+					"detailCodeList", List.of(
+						Map.of(
+							"detailNm", "areaName",
+							"detailCode", "DETAIL_CODE001"
+						),
+						Map.of(
+							"detailNm", "city",
+							"detailCode", "DETAIL_CODE002"
+						)
+					)
+				);
+				
+				((ObjectNode) node).setAll(mapper.convertValue(groupCode, ObjectNode.class));
+				
+			}
+		}
+		System.out.println("jsonNode.toPrettyString() = " + jsonNode.get("detailFields").toPrettyString());
 	}
 	
 }
