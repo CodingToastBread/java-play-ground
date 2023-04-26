@@ -12,24 +12,25 @@ public class DelimiterTests {
 
     private final String testTxt = "2022|10|11530|10100|0|서울특별시|구로구|신도림동|1|108.51|||||||||||||||||||";
 
-    // length 29
-    // empty string must be element
+    // after delimited with '|', the list(or array) length must be 29
+    // and also Empty strings must be preserved.
 
     @Test
-    @DisplayName("java built in 메소드인 delimit 사용")
+    @DisplayName("Using the built-in Java method 'delimit'")
     void onlyJavaUsingDelimitMethodTest() {
 
     }
 
 
     @Test
-    @DisplayName("java built in 메소드인 delimit 사용")
+    @DisplayName("Using the built-in Java class 'StringTokenizer'")
     void onlyJavaUsingStringTokenizerMethodTest() {
 
     }
 
 
     @Test
+    @DisplayName("Using the 'StringUtils' class")
     void withSpringUtilTest() {
         String[] strings = StringUtils.delimitedListToStringArray(testTxt, "|");
         assertThat(strings.length).isEqualTo(29);
