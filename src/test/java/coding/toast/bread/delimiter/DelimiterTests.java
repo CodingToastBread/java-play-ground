@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class DelimiterTests {
 
-    private final String testTxt = "2022|10|11530|10100|0|서울특별시|구로구|신도림동|1|108.51|||||||||||||||||||";
+    private final String testTxt = "2022|10|11530|10100|0|Seoul|Guro-gu|Sindorim-dong|1|108.51|||||||||||||||||||"
 
     // after delimited with '|', the list(or array) length must be 29
     // and also Empty strings must be preserved.
