@@ -99,6 +99,24 @@ public class SpringExpressionLangTests {
 			return Map.of("good", "job");
 		}
 	}
+
+	/*
+ 	// tip. reading Resource with @Value tag.
+	@Value("classpath:static/alarm.html")
+    	private Resource resourceFile;
+
+    	@Value("classpath:static/*.html")
+    	private Resource[] resourceList;
+
+	@Test
+	void readEmailHtmlTemplate() throws ApiException {
+		try (InputStream is = resourceFile.getInputStream()){
+		    log.info(IOUtils.toString(is, StandardCharsets.UTF_8));
+		} catch (IOException e) {
+	    		log.error(e);
+		}
+    	}
+        */
 	
 	// Bean References test(2)
 	@Value("#{myMap}")
