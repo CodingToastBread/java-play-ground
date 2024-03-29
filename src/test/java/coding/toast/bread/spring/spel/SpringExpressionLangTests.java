@@ -79,7 +79,9 @@ public class SpringExpressionLangTests {
 	// you can do much more complicated process if you want.
 	@Value("#{T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(T(java.time.LocalDateTime).now())}")
 	private String formattedDateString;
-	
+
+	@Value("#{T(org.springframework.util.StringUtils).hasText('${checking.emtpy.string.value:}')}")
+	private Boolean isNotEmptyString;
 	
 	// Bean References test(1)
 	@TestConfiguration
@@ -163,6 +165,7 @@ public class SpringExpressionLangTests {
 		log.info("mapValue = {}", mapValue);
 		log.info("now = {}", now);
 		log.info("formattedDateString = {}", formattedDateString);
+		log.info("isNotEmptyString = {}", isNotEmptyString);
 		log.info("userHome = {}", userHome);
 		log.info("osName = {}", osName);
 		log.info("tellMeYourOs = {}", tellMeYourOs);
