@@ -38,7 +38,7 @@ public class JacksonConvertTests {
 		
 		// Are you curious about why we use TypeReference?
 		// Then please search for 'Super Type Token' to learn more!
-		Map<String, String> map = mapper.convertValue(address, new TypeReference<Map<String, String>>() {
+		Map<String, String> map = mapper.convertValue(address, new TypeReference<>() {
 		});
 		
 		// test map size, and every entry.
@@ -96,7 +96,7 @@ public class JacksonConvertTests {
 		objectNode.put("age", 21);
 		
 		ArrayNode favoriteFood = factory.arrayNode().add("pizza").add("hamburger");
-		objectNode.put("favoriteFood", favoriteFood);
+		objectNode.set("favoriteFood", favoriteFood);
 		
 		Person person = mapper.convertValue(objectNode, Person.class);
 		// Person[name=toast bread, age=21, favoriteFood=[pizza, hamburger]]
@@ -134,55 +134,53 @@ public class JacksonConvertTests {
 	@Test
 	@DisplayName("put some data in json array")
 	void dataInsertInJsonArrayTest() throws JsonProcessingException {
-		JsonNodeFactory instance = JsonNodeFactory.instance;
-		String jsonString =
-            """
-			{
-	           "detailFields":[
-	              {
-	                 "column":"area",
-	                 "comment":"area"
-	              },
-	              {
-	                 "column":"data",
-	                 "comment":"data"
-	              },
-	              {
-	                 "column":"year",
-	                 "comment":"year"
-	              }
-	           ],
-	           "searchCndFields":[
-	              {
-	                 "column":"data",
-	                 "comment":"data",
-	                 "groupCode":"CODE001"
-	              },
-	              {
-	                 "column":"year",
-	                 "comment":"year",
-	                 "groupCode":"CODE002"
-	              }
-	           ],
-	           "searchFields":[
-	              {
-	                 "column":"area",
-	                 "comment":"area"
-	              },
-	              {
-	                 "column":"data",
-	                 "comment":"data"
-	              },
-	              {
-	                 "column":"year",
-	                 "comment":"year"
-	              }
-	           ],
-	           "detailRepField":{
-	              "column":"area",
-	              "comment":"area"
-	           }
-	        }
+		String jsonString =  """
+        {
+            "detailFields":[
+               {
+                  "column":"area",
+                  "comment":"area"
+               },
+               {
+                  "column":"data",
+                  "comment":"data"
+               },
+               {
+                  "column":"year",
+                  "comment":"year"
+               }
+            ],
+            "searchCndFields":[
+               {
+                  "column":"data",
+                  "comment":"data",
+                  "groupCode":"CODE001"
+               },
+               {
+                  "column":"year",
+                  "comment":"year",
+                  "groupCode":"CODE002"
+               }
+            ],
+            "searchFields":[
+               {
+                  "column":"area",
+                  "comment":"area"
+               },
+               {
+                  "column":"data",
+                  "comment":"data"
+               },
+               {
+                  "column":"year",
+                  "comment":"year"
+               }
+            ],
+            "detailRepField":{
+               "column":"area",
+               "comment":"area"
+            }
+         }
         """;
 		
 		ObjectNode jsonNode = mapper.readValue(jsonString, new TypeReference<>() {});

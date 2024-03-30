@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -51,7 +52,7 @@ public class JavaHttpUrlConnectionTests {
     @Test
     void getMethodTest() throws IOException {
         log.info("working on it !!!");
-        URL url = new URL("https://jsonplaceholder.typicode.com/posts/1");
+        URL url = URI.create("https://jsonplaceholder.typicode.com/posts/1").toURL();
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         setDefaultUrlConnection(urlConnection, "GET");
         
@@ -81,7 +82,7 @@ public class JavaHttpUrlConnectionTests {
         // get response body
         StringBuilder sb = new StringBuilder();
         try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-             BufferedReader bfr = new BufferedReader(isr);
+             BufferedReader bfr = new BufferedReader(isr)
         ) {
             String line;
             while ((line = bfr.readLine()) != null) {
@@ -95,7 +96,7 @@ public class JavaHttpUrlConnectionTests {
         // StreamUtils.copy()
         
         System.out.println("responseHeader = " + headerFields);
-        System.out.println("responseBody = " + sb.toString());
+        System.out.println("responseBody = " + sb);
         
     }
     
@@ -107,7 +108,7 @@ public class JavaHttpUrlConnectionTests {
     @Test
     void postMethodTest() throws IOException {
     
-        URL url = new URL("https://jsonplaceholder.typicode.com/posts/");
+        URL url = URI.create("https://jsonplaceholder.typicode.com/posts/").toURL();
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
         setDefaultUrlConnection(urlConnection, "POST");
         urlConnection.setRequestProperty("Content-Type", "application/json");

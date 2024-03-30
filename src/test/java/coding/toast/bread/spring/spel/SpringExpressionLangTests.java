@@ -1,10 +1,9 @@
 package coding.toast.bread.spring.spel;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -13,7 +12,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -83,17 +81,23 @@ public class SpringExpressionLangTests {
 	@Value("#{T(org.springframework.util.StringUtils).hasText('${checking.emtpy.string.value:}')}")
 	private Boolean isNotEmptyString;
 	
+	// null or blank
+	@Value("#{'${something.wow:}'.trim() <= ''}")
+	private Boolean nullOrBlank;
+	
+	// not null or blank
+	@Value("#{'${something.wow:}'.trim() > ''}")
+	private Boolean notNullOrBlank;
+	
 	// Bean References test(1)
 	@TestConfiguration
 	static class SpringExpressionLangTestConfig {
 		
+		@Getter
 		@Component("testMeBean")
 		static class TestMe {
-			private String name = "my Name Is 'testMeBean'";
+			private final String name = "my Name Is 'testMeBean'";
 			
-			public String getName () {
-				return name;
-			}
 		}
 	
 		@Bean
@@ -107,8 +111,8 @@ public class SpringExpressionLangTests {
 	@Value("classpath:static/alarm.html")
     	private Resource resourceFile;
 
-    	@Value("classpath:static/*.html")
-    	private Resource[] resourceList;
+    @Value("classpath:static/*.html")
+    private Resource[] resourceList;
 
 	@Test
 	void readEmailHtmlTemplate() throws ApiException {
@@ -117,8 +121,8 @@ public class SpringExpressionLangTests {
 		} catch (IOException e) {
 	    		log.error(e);
 		}
-    	}
-        */
+    }
+    */
 	
 	// Bean References test(2)
 	@Value("#{myMap}")
@@ -166,6 +170,8 @@ public class SpringExpressionLangTests {
 		log.info("now = {}", now);
 		log.info("formattedDateString = {}", formattedDateString);
 		log.info("isNotEmptyString = {}", isNotEmptyString);
+		log.info("nullOrBlank = {}", nullOrBlank);
+		log.info("notNullOrBlank = {}", notNullOrBlank);
 		log.info("userHome = {}", userHome);
 		log.info("osName = {}", osName);
 		log.info("tellMeYourOs = {}", tellMeYourOs);
@@ -179,10 +185,11 @@ public class SpringExpressionLangTests {
 	
 	@Test
 	@DisplayName("Test with SpelExpressionParser")
+	@SuppressWarnings({"rawtypes","unchecked"})
 	void SpeLParserTest() {
 		
 		SpelExpressionParser parser = new SpelExpressionParser();
-		Object helloWorld = (String) parser.parseExpression("'Hello World'").getValue();
+		Object helloWorld = parser.parseExpression("'Hello World'").getValue();
 		
 		log.debug("helloWorld = {}", helloWorld);
 		assertThat(helloWorld).isEqualTo("Hello World");
@@ -201,10 +208,8 @@ public class SpringExpressionLangTests {
 		Object nullVal = parser.parseExpression("null").getValue();
 		assertThat(nullVal).isNull();
 		
-		@SuppressWarnings("rawtypes")
 		List list = (List) parser.parseExpression("{1,2,3,4}").getValue();
 		assertThat(list).containsExactly(1, 2, 3, 4);
-	
 		
 	}
 }
