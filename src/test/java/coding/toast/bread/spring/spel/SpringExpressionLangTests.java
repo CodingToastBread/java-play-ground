@@ -8,9 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -106,24 +111,6 @@ public class SpringExpressionLangTests {
 		}
 	}
 
-	/*
- 	// tip. reading Resource with @Value tag.
-	@Value("classpath:static/alarm.html")
-    	private Resource resourceFile;
-
-    @Value("classpath:static/*.html")
-    private Resource[] resourceList;
-
-	@Test
-	void readEmailHtmlTemplate() throws ApiException {
-		try (InputStream is = resourceFile.getInputStream()){
-		    log.info(IOUtils.toString(is, StandardCharsets.UTF_8));
-		} catch (IOException e) {
-	    		log.error(e);
-		}
-    }
-    */
-	
 	// Bean References test(2)
 	@Value("#{myMap}")
 	private Map<String, String> mapValue;
@@ -212,4 +199,40 @@ public class SpringExpressionLangTests {
 		assertThat(list).containsExactly(1, 2, 3, 4);
 		
 	}
+	
+	
+	// you can get file info!
+	@Value("classpath:coding/toast/bread/playing_with_file/simple_string.txt")
+	private Resource resourceFile;
+	
+	// you can even use "Asterisk" and get multiple files!
+	@Value("classpath:coding/toast/bread/playing_with_file/*.txt")
+	private Resource[] resourceList;
+	
+	@Test
+	@DisplayName("ReadFile with Value Annotation!")
+	void readFileContentTest() {
+		if (resourceFile != null) {
+			try (InputStream is = resourceFile.getInputStream()){
+				String readString = StreamUtils.copyToString(is, StandardCharsets.UTF_8);
+				log.info("string in the file is... {} !", readString);
+				assertThat(readString.trim()).isEqualTo("hello world");
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		if (resourceList != null) {
+			for (Resource resource : resourceList) {
+				try {
+					String filename = resource.getFilename();
+					String readString = StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
+					log.info("file: {},  content => \n{}", filename, readString);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+	
 }
