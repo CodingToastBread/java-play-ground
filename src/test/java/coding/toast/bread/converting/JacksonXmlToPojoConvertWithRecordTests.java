@@ -1,6 +1,7 @@
 package coding.toast.bread.converting;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -64,6 +65,7 @@ public class JacksonXmlToPojoConvertWithRecordTests {
 		
 	}
 	
+	@JsonRootName("RESPONSE")
 	record XmlReadPojo(
 		@JsonProperty("HEADER")
 		Header header,
