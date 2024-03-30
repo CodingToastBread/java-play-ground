@@ -29,6 +29,8 @@ Here is a list of tasks that I have done so far.
   - [(Jakarta) JAXB - marshalling, unmarshalling](src/test/java/coding/toast/bread/xml_pojo_convert/XmlPojoConvertTest.java)
     - this code need some artifacts from maven repository. Please refer to the [pom.xml file](https://github.com/CodingToastBread/java-playground/blob/main/pom.xml)!
     - required artifacts: `jakarta.xml.bind-api`,  `jakarta.activation-api` `jaxb-runtime`
+  - [Using Jackson XmlMapper (+ class)](src/test/java/coding/toast/bread/converting/JacksonXmlToPojoConvertTests.java)
+  - [Using Jackson XmlMapper (+ record)](src/test/java/coding/toast/bread/converting/JacksonXmlToPojoConvertWithRecordTests.java)
 
 <br>
 

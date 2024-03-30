@@ -1,15 +1,11 @@
 package coding.toast.bread.converting;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -20,13 +16,13 @@ import java.io.StringWriter;
 import java.util.List;
 
 /**
- * Converting Xml to Pojo and Pojo to Xml Using Jackson Mapper.
+ * Converting Xml to Pojo (=record) and Pojo to Xml Using Jackson Mapper.
  */
 @Slf4j
-public class JacksonXmlToPojoConvertTests {
+public class JacksonXmlToPojoConvertWithRecordTests {
 	
 	@Test
-	void convertXmlPojoUsingClassTest() {
+	void convertXmlPojoUsingRecordTest() {
 		// Read Sample XML File
 		ClassPathResource xmlResource = new ClassPathResource("coding/toast/bread/xml_pojo_convert/complicate.xml");
 		
@@ -47,11 +43,11 @@ public class JacksonXmlToPojoConvertTests {
 			XmlReadPojo pojo = xmlMapper.readValue(inputStream, XmlReadPojo.class);
 			
 			log.info("XML => POJO Convert result ...\n");
-			log.info("header = \n{}\n", pojo.getHeader());
+			log.info("header = \n{}\n", pojo.header());
 			
-			log.info("body = \n{}\n", pojo.getBody());
+			log.info("body = \n{}\n", pojo.body());
 			
-			var buildingInfos = pojo.getBody().getBuildingInfos();
+			var buildingInfos = pojo.body.buildingInfos();
 			buildingInfos.forEach(buildingInfo -> log.info("building infos {}", buildingInfo));
 			
 			// Convert POJO ==> XML (string)
@@ -68,61 +64,28 @@ public class JacksonXmlToPojoConvertTests {
 		
 	}
 	
-	@Getter
-	@Setter
-	@ToString
-	@JsonRootName("RESPONSE")
-	static class XmlReadPojo {
-		
+	record XmlReadPojo(
 		@JsonProperty("HEADER")
-		private Header header;
-		
+		Header header,
 		@JsonProperty("BODY")
-		private Body body;
-		
-		@Getter @Setter
-		static class Header {
-			
-			@JsonProperty("CODE")
-			private String code;
-			@JsonProperty("MESSAGE")
-			private String message;
-			
-			@Override
-			public String toString() {
-				return "Header{" +
-					"code='" + code + '\'' +
-					", message='" + message + '\'' +
-					'}';
-			}
-		}
-		
-		@Getter @Setter
-		static class Body {
-			@JsonProperty("BLDG_LIST")
-			@JacksonXmlElementWrapper
-			private List<BuildingInfo> buildingInfos;
-			
-			@Override
-			public String toString() {
-				return "Body{buildingInfos=" + buildingInfos + '}';
-			}
-			
-			@Getter @Setter
-			static class BuildingInfo {
-				@JsonProperty("ZIPCODE")
-				private String zipCode;
-				@JsonProperty("BLDG_NM")
-				private String buildingName;
-				
-				@Override
-				public String toString() {
-					return "BuildingInfo{" +
-						"zipCode='" + zipCode + '\'' +
-						", buildingName='" + buildingName + '\'' +
-						'}';
-				}
-			}
-		}
-	}
+		Body body
+	){}
+	
+	
+	record Header(
+		@JsonProperty("CODE") String code,
+		@JsonProperty("MESSAGE") String message
+	){}
+	
+	
+	record Body(
+		@JsonProperty("BLDG_LIST") @JacksonXmlElementWrapper
+		List<BuildingInfo> buildingInfos){}
+	
+	record BuildingInfo(
+		@JsonProperty("ZIPCODE")
+		String zipCode,
+		@JsonProperty("BLDG_NM")
+		String buildingName){}
+
 }
