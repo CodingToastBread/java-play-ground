@@ -3,7 +3,9 @@
 My Java and Spring Coding playground Repository.<br>
 _nothing special_. **_just playing with code_**, that's all.
 
->Remark : Please note that all code is written based on JDK 17. Please keep this in mind.
+> ~~Remark : Please note that all code is written based on JDK 17. Please keep this in mind.~~<br>
+> Remark : (2024-03-31) The Code is now based on `Java 21`<br>
+> Remark : (2024-03-31) The Spring Boot Version is now `3`
 
 <br><br>
 
