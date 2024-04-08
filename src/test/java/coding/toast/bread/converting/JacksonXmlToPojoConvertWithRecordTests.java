@@ -25,7 +25,7 @@ public class JacksonXmlToPojoConvertWithRecordTests {
 	@Test
 	void convertXmlPojoUsingRecordTest() {
 		// Read Sample XML File
-		ClassPathResource xmlResource = new ClassPathResource("coding/toast/bread/xml_pojo_convert/complicate.xml");
+		ClassPathResource xmlResource = new ClassPathResource("xml_pojo_convert/complicate.xml");
 		
 		// Create Xml Mapper
 		XmlMapper xmlMapper = new XmlMapper(

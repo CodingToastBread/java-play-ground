@@ -28,10 +28,12 @@ import static org.springframework.test.util.AssertionErrors.fail;
 @Slf4j
 public class XmlPojoConvertTest {
 	
+	private static final ClassLoader CLASS_LOADER = XmlPojoConvertTest.class.getClassLoader();
+	
 	@Test
 	@DisplayName("converting simple xml file to pojo (= unmarshalling)")
 	void simpleXmlToPojoConvertingTest() {
-		try (InputStream is = this.getClass().getResourceAsStream("./simple.xml")) {
+		try (InputStream is = CLASS_LOADER.getResourceAsStream("xml_pojo_convert/simple.xml")) {
 			
 			JAXBContext jaxbContext = JAXBContext.newInstance(Person.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -66,7 +68,7 @@ public class XmlPojoConvertTest {
 	@Test
 	@DisplayName("converting complicate xml file to pojo (= unmarshalling)")
 	void complicateXmlToPojoConvertingTest() {
-		try (InputStream is = this.getClass().getResourceAsStream("./complicate.xml")) {
+		try (InputStream is = CLASS_LOADER.getResourceAsStream("xml_pojo_convert/complicate.xml")) {
 			
 			JAXBContext jaxbContext = JAXBContext.newInstance(Response.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

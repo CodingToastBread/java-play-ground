@@ -7,10 +7,8 @@ import org.springframework.util.FileSystemUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
+import java.nio.file.attribute.*;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -39,6 +37,8 @@ public class JavaFilesApiTest {
 		= System.getProperty("user.home") + File.separator + "directory_for_java_file_test";
 	
 	private static final Path testDirPath = Path.of(testFileDirectoryPath);
+	
+	private static final ClassLoader CLASS_LOADER = JavaFilesApiTest.class.getClassLoader();
 	
 	/**
 	 * Create a test folder Before Test
@@ -86,19 +86,23 @@ public class JavaFilesApiTest {
 		createNewDirectory(personPath);
 		createNewDirectory(todoPath);
 		
-		InputStream companyStream = JavaFilesApiTest.class.getResourceAsStream("./company_info.txt");
-		InputStream personStream = JavaFilesApiTest.class.getResourceAsStream("./person_info.txt");
-		InputStream todoStream = JavaFilesApiTest.class.getResourceAsStream("./todo_list.txt");
-		
-		// create sample files
-		Path companyFilePath = sampleDirPath.resolve("company.txt");
-		Path personFilePath = personPath.resolve("person_info.txt");
-		Path todoFilePath = todoPath.resolve("todo_list.txt");
-		
-		Files.copy(companyStream, companyFilePath);
-		Files.copy(personStream, personFilePath);
-		Files.copy(todoStream, todoFilePath);
-		
+		try (
+			InputStream companyStream = CLASS_LOADER.getResourceAsStream("playing_with_file/company_info.txt");
+			InputStream personStream = CLASS_LOADER.getResourceAsStream("playing_with_file/person_info.txt");
+			InputStream todoStream = CLASS_LOADER.getResourceAsStream("playing_with_file/todo_list.txt")
+		) {
+			// create sample files
+			Path companyFilePath = sampleDirPath.resolve("company.txt");
+			Path personFilePath = personPath.resolve("person_info.txt");
+			Path todoFilePath = todoPath.resolve("todo_list.txt");
+			
+			Files.copy(Objects.requireNonNull(companyStream, "company_info.txt not found"), companyFilePath);
+			Files.copy(Objects.requireNonNull(personStream, "person_info.txt not found"), personFilePath);
+			Files.copy(Objects.requireNonNull(todoStream, "todo_list.txt not found"), todoFilePath);
+			
+		} catch (NullPointerException | IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	
@@ -110,17 +114,19 @@ public class JavaFilesApiTest {
 		Path todoListFilePath = testDirPath.resolve("todo_list.txt");
 		
 		// Method 1: using InputStream.transferTo api
-		try (InputStream is = this.getClass().getResourceAsStream("./person_info.txt");
+		try (InputStream is = CLASS_LOADER.getResourceAsStream("playing_with_file/person_info.txt");
 		     OutputStream os = Files.newOutputStream(personInfoFilePath)) {
+			Objects.requireNonNull(is);
 			is.transferTo(os);
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException e) {
 			fail(e.getMessage());
 			return;
 		}
 		
 		// Method 2: when there was no transferTo Api we had to do like this...
-		try (InputStream is = this.getClass().getResourceAsStream("./todo_list.txt");
+		try (InputStream is = CLASS_LOADER.getResourceAsStream("playing_with_file/todo_list.txt");
 		     OutputStream os = Files.newOutputStream(todoListFilePath)) {
+			Objects.requireNonNull(is);
 			
 			int bufferSize = 1024;
 			int readSize;
@@ -130,7 +136,7 @@ public class JavaFilesApiTest {
 				os.write(bufferByte, 0, readSize);
 			}
 			
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException e) {
 			fail(e.getMessage());
 			return;
 		}
@@ -226,7 +232,7 @@ public class JavaFilesApiTest {
 		// first create sampleFile...
 		Path testFilePath = testDirPath.resolve("appendingString.txt");
 		try {
-			Path file = Files.createFile(testFilePath);
+			Files.createFile(testFilePath);
 		} catch (IOException e) {
 			fail("fail creating file in \"appendStringAtExistingFile\" test!");
 		}
@@ -245,7 +251,7 @@ public class JavaFilesApiTest {
 		
 		// Method 2:
 		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(testFilePath, StandardCharsets.UTF_8, APPEND);
-		     PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+		     PrintWriter printWriter = new PrintWriter(bufferedWriter, true)) {
 			
 			// The bufferedWriter alone is sufficient for adding content to a file,
 			// but if you need to write a sentence and keep adding new lines,

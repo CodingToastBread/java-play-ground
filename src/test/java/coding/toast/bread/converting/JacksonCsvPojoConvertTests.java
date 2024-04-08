@@ -25,7 +25,7 @@ public class JacksonCsvPojoConvertTests {
 	@Description("Reading CSV File and convert to Iterator which contains POJO")
 	void readTest() {
 		// read file
-		var csvFile = new ClassPathResource("coding/toast/bread/sample_csv/customers-100.csv");
+		var csvFile = new ClassPathResource("sample_csv/customers-100.csv");
 		
 		// there is header row in our csv!
 		CsvSchema schema = CsvSchema.emptySchema().withHeader();

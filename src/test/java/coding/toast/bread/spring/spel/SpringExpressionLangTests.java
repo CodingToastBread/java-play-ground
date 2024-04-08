@@ -202,11 +202,11 @@ public class SpringExpressionLangTests {
 	
 	
 	// you can get file info!
-	@Value("classpath:coding/toast/bread/playing_with_file/simple_string.txt")
+	@Value("classpath:playing_with_file/simple_string.txt")
 	private Resource resourceFile;
 	
 	// you can even use "Asterisk" and get multiple files!
-	@Value("classpath:coding/toast/bread/playing_with_file/*.txt")
+	@Value("classpath:playing_with_file/*.txt")
 	private Resource[] resourceList;
 	
 	@Test
