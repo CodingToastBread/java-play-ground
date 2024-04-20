@@ -33,6 +33,7 @@ public class TestServerSocket {
 					// one Task => one Virtual Thread!
 					Thread.ofVirtual().start(() -> {
 						try (
+							clientCommunicateSocket;
 							// read Request Strings
 							BufferedReader in = new BufferedReader(new InputStreamReader(clientCommunicateSocket.getInputStream(), StandardCharsets.UTF_8));
 							// write Response to Request Client
