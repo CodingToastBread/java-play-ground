@@ -6,15 +6,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
+
+import static coding.toast.bread.socket.TestSocketConfiguration.*;
 
 public class TestClientSocket {
 	public static void main(String[] args) {
 		
 		try (
-			Socket socket = new Socket("127.0.0.1", 9000);
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))
+			Socket socket = new Socket(SERVER_HOST, PORT_NUM);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true, COMMUNICATE_CHARSET);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), COMMUNICATE_CHARSET))
 		) {
 			// User Input
 			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));

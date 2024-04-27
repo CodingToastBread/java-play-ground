@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+
+import static coding.toast.bread.socket.TestSocketConfiguration.COMMUNICATE_CHARSET;
+import static coding.toast.bread.socket.TestSocketConfiguration.PORT_NUM;
 
 /**
  * Very Simple Echo Server Class For Test
@@ -17,7 +19,7 @@ public class TestServerSocket {
 	public static void main(String[] args) {
 		
 		try {
-			try (ServerSocket serverSocket = new ServerSocket(9000)) {
+			try (ServerSocket serverSocket = new ServerSocket(PORT_NUM)) {
 				// Keep listen to Server Socket!
 				while (true) {
 					// serverSocket.accept(); will be blocked,
@@ -35,9 +37,9 @@ public class TestServerSocket {
 						try (
 							clientCommunicateSocket;
 							// read Request Strings
-							BufferedReader in = new BufferedReader(new InputStreamReader(clientCommunicateSocket.getInputStream(), StandardCharsets.UTF_8));
+							BufferedReader in = new BufferedReader(new InputStreamReader(clientCommunicateSocket.getInputStream(), COMMUNICATE_CHARSET));
 							// write Response to Request Client
-							PrintWriter out = new PrintWriter(clientCommunicateSocket.getOutputStream(), true, StandardCharsets.UTF_8)
+							PrintWriter out = new PrintWriter(clientCommunicateSocket.getOutputStream(), true, COMMUNICATE_CHARSET)
 						) {
 							String readLine;
 							// while the Client Socket is connected,
