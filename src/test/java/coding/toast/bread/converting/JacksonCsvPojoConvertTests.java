@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Description;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Read, Write CSV Using Jackson CSV Library
@@ -40,6 +40,32 @@ public class JacksonCsvPojoConvertTests {
 				System.out.println("next = " + iterator.next());
 			}
 			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Test
+	@Description("Reading CSV File and convert to Iterator which contains Map")
+	void readTestWithEncoding() {
+		// read file
+		var csvFile = new ClassPathResource("sample_csv/customers-100.csv");
+
+		// there is header row in our csv!
+		CsvSchema schema = CsvSchema.emptySchema().withHeader();
+
+		// create Reader For Csv File which will eventually create Map instance
+		ObjectReader objectReader = new CsvMapper().readerFor(new TypeReference<Map<String, String>>() {}).with(schema);
+
+		// use Reader for encode
+		try (InputStreamReader isr = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
+			 BufferedReader br = new BufferedReader(isr)) {
+
+			MappingIterator<Map<String, String>> iterator = objectReader.readValues(br);
+			while (iterator.hasNext()) {
+				System.out.println("next = " + iterator.next());
+			}
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
