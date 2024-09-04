@@ -32,10 +32,10 @@ public class JacksonCsvPojoConvertTests {
 		
 		// create Reader For Csv File
 		ObjectReader objectReader = new CsvMapper().readerFor(Customer.class).with(schema);
-		
-		try (InputStream inputStream = csvFile.getInputStream()) {
-			
-			MappingIterator<Customer> iterator = objectReader.readValues(inputStream);
+
+		try (InputStream inputStream = csvFile.getInputStream();
+			 MappingIterator<Customer> iterator = objectReader.readValues(inputStream)) {
+
 			while (iterator.hasNext()) {
 				System.out.println("next = " + iterator.next());
 			}
@@ -59,9 +59,9 @@ public class JacksonCsvPojoConvertTests {
 
 		// use Reader for encode
 		try (InputStreamReader isr = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
-			 BufferedReader br = new BufferedReader(isr)) {
+			 BufferedReader br = new BufferedReader(isr);
+			 MappingIterator<Map<String, String>> iterator = objectReader.readValues(br)) {
 
-			MappingIterator<Map<String, String>> iterator = objectReader.readValues(br);
 			while (iterator.hasNext()) {
 				System.out.println("next = " + iterator.next());
 			}
@@ -94,8 +94,7 @@ public class JacksonCsvPojoConvertTests {
 		);
 		
 		// Write Csv Data
-		try {
-			StringWriter stringWriter = new StringWriter();
+		try (StringWriter stringWriter = new StringWriter()) {
 			writer.writeValue(stringWriter, names);
 			System.out.println(stringWriter);
 		} catch (IOException e) {
